@@ -15,7 +15,7 @@ class CMockHeaderParser
     @c_calling_conventions = cfg.c_calling_conventions.uniq
     @treat_as_array = cfg.treat_as_array
     @treat_as_void = (['void'] + cfg.treat_as_void).uniq
-    @function_declaration_parse_base_match = '([\w\s\*&\(\),\[\]]+??)\(([\w\s\*\(\),\.\[\]+\-\/]*)\)'
+    @function_declaration_parse_base_match = '([\w\s\*\(\),\[\]]+??)\(([\w\s\*\(\),\.\[\]+\-\/]*)\)'
     @declaration_parse_matcher = /#{@function_declaration_parse_base_match}$/m
     @standards = (%w[int short char long unsigned signed] + cfg.treat_as.keys).uniq
     @array_size_name = cfg.array_size_name
@@ -514,7 +514,7 @@ class CMockHeaderParser
     parsed = parse_type_and_name(regex_match[1])
 
     # Record original name without scope prefix
-    decl[:orig_name] = parsed[:name]
+    decl[:unscoped_name] = parsed[:name]
 
     # Prefix name with namespace scope (if any) and then class
     decl[:name] = namespace.join('_')
@@ -524,7 +524,7 @@ class CMockHeaderParser
     end
     # Add original name to complete fully scoped name
     decl[:name] << '_' unless decl[:name].empty?
-    decl[:name] << decl[:orig_name]
+    decl[:name] << decl[:unscoped_name]
 
     decl[:modifier] = parsed[:modifier]
     unless parsed[:c_calling_convention].nil?

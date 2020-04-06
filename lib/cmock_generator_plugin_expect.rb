@@ -25,14 +25,8 @@ class CMockGeneratorPluginExpect
 
   def instance_typedefs(function)
     lines = ''
-    if function[:return][:type].end_with?('&')
-      # Handle C++ reference return type differently
-      lines << "  #{function[:return][:type].chomp('&')} ReturnRefVal;\n"
-      lines << "  std::reference_wrapper<#{function[:return][:type].chomp('&')}> ReturnVal = ReturnRefVal;\n"
-    else
-      lines << "  #{function[:return][:type]} ReturnVal;\n" unless function[:return][:void?]
-    end
-    lines << "  int CallOrder;\n" if @ordered
+    lines << "  #{function[:return][:type]} ReturnVal;\n"  unless function[:return][:void?]
+    lines << "  int CallOrder;\n"                          if @ordered
     function[:args].each do |arg|
       lines << "  #{arg[:type]} Expected_#{arg[:name]};\n"
     end

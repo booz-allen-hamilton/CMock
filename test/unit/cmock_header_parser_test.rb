@@ -577,7 +577,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
     source = "MY_FUNKY_VOID FunkyVoidReturned(int a)"
     expected = { :var_arg=>nil,
                  :name=>"FunkyVoidReturned",
-                 :orig_name=>"FunkyVoidReturned",
+                 :unscoped_name=>"FunkyVoidReturned",
                  :namespace=>[],
                  :class=>nil,
                  :return=>{ :type   => "void",
@@ -600,7 +600,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
     source = "int FunkyVoidAsArg(MY_FUNKY_VOID)"
     expected = { :var_arg=>nil,
                  :name=>"FunkyVoidAsArg",
-                 :orig_name=>"FunkyVoidAsArg",
+                 :unscoped_name=>"FunkyVoidAsArg",
                  :namespace=>[],
                  :class=>nil,
                  :return=>{ :type   => "int",
@@ -623,7 +623,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
     source = "char FunkyVoidPointer(MY_FUNKY_VOID* bluh)"
     expected = { :var_arg=>nil,
                  :name=>"FunkyVoidPointer",
-                 :orig_name=>"FunkyVoidPointer",
+                 :unscoped_name=>"FunkyVoidPointer",
                  :namespace=>[],
                  :class=>nil,
                  :return=>{ :type   => "char",
@@ -725,7 +725,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
     source = "int Foo(int a, unsigned int b)"
     expected = { :var_arg=>nil,
                  :name=>"Foo",
-                 :orig_name=>"Foo",
+                 :unscoped_name=>"Foo",
                  :namespace=>[],
                  :class=>nil,
                  :return=>{ :type   => "int",
@@ -759,7 +759,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"FunkyChicken",
-                 :orig_name=>"FunkyChicken",
+                 :unscoped_name=>"FunkyChicken",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -786,7 +786,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"tat",
-                 :orig_name=>"tat",
+                 :unscoped_name=>"tat",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -810,7 +810,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => false
                           },
                  :name=>"TheMatrix",
-                 :orig_name=>"TheMatrix",
+                 :unscoped_name=>"TheMatrix",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"const",
@@ -836,7 +836,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => false
                           },
                  :name=>"TheMatrix",
-                 :orig_name=>"TheMatrix",
+                 :unscoped_name=>"TheMatrix",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"const",
@@ -851,11 +851,10 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
   end
 
   it "extract and return function declarations inside namespace and class" do
-
     source = "int Foo(int a, unsigned int b)"
     expected = { :var_arg=>nil,
                  :name=>"ns1_ns2_Bar_Foo",
-                 :orig_name=>"Foo",
+                 :unscoped_name=>"Foo",
                  :class=>"Bar",
                  :namespace=>["ns1", "ns2"],
                  :return=>{ :type   => "int",
@@ -891,7 +890,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                               :void?  => false
                             },
                   :name=>"TheMatrix",
-                  :orig_name=>"TheMatrix",
+                  :unscoped_name=>"TheMatrix",
                   :namespace=>[],
                   :class=>nil,
                   :modifier=>"const",
@@ -911,7 +910,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                               :void?  => false
                             },
                   :name=>"Morpheus",
-                  :orig_name=>"Morpheus",
+                  :unscoped_name=>"Morpheus",
                   :namespace=>[],
                   :class=>nil,
                   :modifier=>"",
@@ -932,7 +931,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
 
     expected = [{ :var_arg=>nil,
                   :name=>"TheMatrix",
-                  :orig_name=>"TheMatrix",
+                  :unscoped_name=>"TheMatrix",
                   :namespace=>[],
                   :class=>nil,
                   :return=> { :type   => "int",
@@ -963,7 +962,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
 
     expected = [{ :var_arg => nil,
                   :name    => "PorkRoast",
-                  :orig_name => "PorkRoast",
+                  :unscoped_name => "PorkRoast",
                   :namespace=>[],
                   :class=>nil,
                   :return  => { :type       => "const int*",
@@ -995,7 +994,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
 
     expected = [{ :var_arg => nil,
                   :name    => "PorkRoast",
-                  :orig_name => "PorkRoast",
+                  :unscoped_name => "PorkRoast",
                   :namespace=>[],
                   :class=>nil,
                   :return  => { :type       => "int const*",
@@ -1024,7 +1023,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
 
     expected = [{ :var_arg=>nil,
                   :name=>"PorkRoast",
-                  :orig_name=>"PorkRoast",
+                  :unscoped_name=>"PorkRoast",
                   :namespace=>[],
                   :class=>nil,
                   :return=> { :type   => "int*",
@@ -1049,7 +1048,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
     source = "void foo(int const*, int*const, const int*, const int*const, int const*const, int*, int, const int);\n"
 
     expected = [{ :name => "foo",
-                  :orig_name => "foo",
+                  :unscoped_name => "foo",
                   :namespace=>[],
                   :class=>nil,
                   :modifier => "",
@@ -1084,7 +1083,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
              "         int const*const param5, int*param6, int param7, const int param8);\n"
 
     expected = [{ :name => "bar",
-                  :orig_name => "bar",
+                  :unscoped_name => "bar",
                   :namespace=>[],
                   :class=>nil,
                   :modifier => "",
@@ -1118,7 +1117,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
     source = "Book AddToBook(Book book, const IntArray values);\n"
 
     expected = [{ :name => "AddToBook",
-                  :orig_name => "AddToBook",
+                  :unscoped_name => "AddToBook",
                   :namespace=>[],
                   :class=>nil,
                   :modifier=>"",
@@ -1151,7 +1150,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
 
     expected = [{ :var_arg=>nil,
                   :name=>"DrHorrible",
-                  :orig_name=>"DrHorrible",
+                  :unscoped_name=>"DrHorrible",
                   :namespace=>[],
                   :class=>nil,
                   :return  => { :type   => "void",
@@ -1178,7 +1177,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                               :void?  => false
                             },
                   :name=>"CaptainHammer",
-                  :orig_name=>"CaptainHammer",
+                  :unscoped_name=>"CaptainHammer",
                   :namespace=>[],
                   :class=>nil,
                   :modifier=>"",
@@ -1206,7 +1205,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                               :void?  => false
                             },
                   :name=>"DrHorrible",
-                  :orig_name=>"DrHorrible",
+                  :unscoped_name=>"DrHorrible",
                   :namespace=>[],
                   :class=>nil,
                   :modifier=>"",
@@ -1225,7 +1224,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                               :void?  => true
                             },
                   :name=>"Penny",
-                  :orig_name=>"Penny",
+                  :unscoped_name=>"Penny",
                   :namespace=>[],
                   :class=>nil,
                   :modifier=>"",
@@ -1244,7 +1243,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                               :void?  => false
                             },
                   :name=>"CaptainHammer",
-                  :orig_name=>"CaptainHammer",
+                  :unscoped_name=>"CaptainHammer",
                   :namespace=>[],
                   :class=>nil,
                   :modifier=>"",
@@ -1268,7 +1267,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"OrangePeel",
-                 :orig_name=>"OrangePeel",
+                 :unscoped_name=>"OrangePeel",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1294,7 +1293,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"ApplePeel",
-                 :orig_name=>"ApplePeel",
+                 :unscoped_name=>"ApplePeel",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1323,7 +1322,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"LemonPeel",
-                 :orig_name=>"LemonPeel",
+                 :unscoped_name=>"LemonPeel",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1352,7 +1351,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"CoinOperated",
-                 :orig_name=>"CoinOperated",
+                 :unscoped_name=>"CoinOperated",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1380,7 +1379,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"CardOperated",
-                 :orig_name=>"CardOperated",
+                 :unscoped_name=>"CardOperated",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1418,7 +1417,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"KeyOperated",
-                 :orig_name=>"KeyOperated",
+                 :unscoped_name=>"KeyOperated",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1443,7 +1442,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"Cheese",
-                 :orig_name=>"Cheese",
+                 :unscoped_name=>"Cheese",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1470,7 +1469,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"FunkyTurkey",
-                 :orig_name=>"FunkyTurkey",
+                 :unscoped_name=>"FunkyTurkey",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1497,7 +1496,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"FunkyTurkey",
-                 :orig_name=>"FunkyTurkey",
+                 :unscoped_name=>"FunkyTurkey",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1524,7 +1523,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"FunkyTurkey",
-                 :orig_name=>"FunkyTurkey",
+                 :unscoped_name=>"FunkyTurkey",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1551,7 +1550,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"FunkyTurkey",
-                 :orig_name=>"FunkyTurkey",
+                 :unscoped_name=>"FunkyTurkey",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1578,7 +1577,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"FunkyChicken",
-                 :orig_name=>"FunkyChicken",
+                 :unscoped_name=>"FunkyChicken",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1605,7 +1604,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             # :void?  => true
                           # },
                  # :name=>"FunkyParrot",
-                 # :orig_name=>"FunkyParrot",
+                 # :unscoped_name=>"FunkyParrot",
                  # :namespace=>[],
                  # :class=>nil,
                  # :modifier=>"",
@@ -1632,7 +1631,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"FunkyBudgie",
-                 :orig_name=>"FunkyBudgie",
+                 :unscoped_name=>"FunkyBudgie",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1660,7 +1659,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => false
                           },
                  :name=>"FunkyRobin",
-                 :orig_name=>"FunkyRobin",
+                 :unscoped_name=>"FunkyRobin",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1689,7 +1688,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => true
                           },
                  :name=>"FunkyFowl",
-                 :orig_name=>"FunkyFowl",
+                 :unscoped_name=>"FunkyFowl",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1716,7 +1715,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => false
                           },
                  :name=>"FunkyPidgeon",
-                 :orig_name=>"FunkyPidgeon",
+                 :unscoped_name=>"FunkyPidgeon",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1743,7 +1742,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => false
                           },
                  :name=>"FunkyTweetie",
-                 :orig_name=>"FunkyTweetie",
+                 :unscoped_name=>"FunkyTweetie",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1769,7 +1768,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => false
                           },
                  :name=>"FunkySeaGull",
-                 :orig_name=>"FunkySeaGull",
+                 :unscoped_name=>"FunkySeaGull",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1795,7 +1794,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                             :void?  => false
                           },
                  :name=>"FunkyMacaw",
-                 :orig_name=>"FunkyMacaw",
+                 :unscoped_name=>"FunkyMacaw",
                  :namespace=>[],
                  :class=>nil,
                  :modifier=>"",
@@ -1823,7 +1822,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                              :void?  => false
                            },
                    :name=>"sqlite3_bind_text",
-                   :orig_name=>"sqlite3_bind_text",
+                   :unscoped_name=>"sqlite3_bind_text",
                    :namespace=>[],
                    :class=>nil,
                    :modifier=>"SQLITE_API",
@@ -1854,7 +1853,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                               :void?  => false
                             },
                   :name=>"XFiles",
-                  :orig_name=>"XFiles",
+                  :unscoped_name=>"XFiles",
                   :namespace=>[],
                   :class=>nil,
                   :modifier=>"",
@@ -1880,7 +1879,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                               :void?  => false
                             },
                   :name=>"MoreSillySongs",
-                  :orig_name=>"MoreSillySongs",
+                  :unscoped_name=>"MoreSillySongs",
                   :namespace=>[],
                   :class=>nil,
                   :modifier=>"",
@@ -1905,7 +1904,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                               :void?  => false
                             },
                   :name=>"LaverneAndShirley",
-                  :orig_name=>"LaverneAndShirley",
+                  :unscoped_name=>"LaverneAndShirley",
                   :namespace=>[],
                   :class=>nil,
                   :modifier=>"",
@@ -1931,7 +1930,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                               :void?  => false
                             },
                   :name=>"TheCosbyShow",
-                  :orig_name=>"TheCosbyShow",
+                  :unscoped_name=>"TheCosbyShow",
                   :namespace=>[],
                   :class=>nil,
                   :modifier=>"",
@@ -2239,7 +2238,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
                               :void?  => false
                             },
                   :name=>"LaverneAndShirley",
-                  :orig_name=>"LaverneAndShirley",
+                  :unscoped_name=>"LaverneAndShirley",
                   :namespace=>[],
                   :class=>nil,
                   :modifier=>"",
@@ -2267,7 +2266,6 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
       "\n",
       "        static void f_void();\n",
       "        static int f_ret_simple();\n",
-      "        static int& f_ret_ref();\n",
       "\n",
       "      protected:\n",
       "        static void protected_f_void();\n",
@@ -2285,7 +2283,6 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
       "namespace ns1 { namespace ns2 { class cls1 { public: int f_header_impl",
       "static void f_void()",
       "static int f_ret_simple()",
-      "static int& f_ret_ref()",
       "protected: static void protected_f_void()",
       "public: private: static void private_f_void()",
       "}",
@@ -2304,7 +2301,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
   # Expected result of above
   def dummy_func
     { :name => "dummy",
-      :orig_name => "dummy",
+      :unscoped_name => "dummy",
       :class => nil,
       :namespace => [],
       :var_arg => nil,
@@ -2326,7 +2323,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
   # Commonly used example function
   def voidvoid_func(namespace=[], name="Classic_functional")
     { :name => name,
-      :orig_name => "functional",
+      :unscoped_name => "functional",
       :class => "Classic",
       :namespace => namespace,
       :var_arg => nil,
@@ -2461,72 +2458,6 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
     assert_equal(expected, @parser.parse("module", source)[:functions])
   end
 
-  it "parses functions with a reference return type" do
-    source = <<~SOURCE
-      int& dummy(void);
-
-      class Classic {
-        public:
-          static int& functional(void);
-      };
-    SOURCE
-
-    # Verify both classic C and C++ examples
-    expected = [
-      { :name => "dummy",
-        :orig_name => "dummy",
-        :class => nil,
-        :namespace => [],
-        :var_arg => nil,
-        :args_string => "void",
-        :args => [],
-        :args_call => "",
-        :contains_ptr? => false,
-        :modifier => "",
-        :return => {
-          :type=>"int&",
-          :name=>"cmock_to_return",
-          :str=>"int& cmock_to_return",
-          :void? => false,
-          :ptr? => false,
-          :const? => false,
-          :const_ptr? => false}},
-      { :name => "Classic_functional",
-        :orig_name => "functional",
-        :class => "Classic",
-        :namespace => [],
-        :var_arg => nil,
-        :args_string => "void",
-        :args => [],
-        :args_call => "",
-        :contains_ptr? => false,
-        :modifier => "",
-        :return => {
-          :type=>"int&",
-          :name=>"cmock_to_return",
-          :str=>"int& cmock_to_return",
-          :void? => false,
-          :ptr? => false,
-          :const? => false,
-          :const_ptr? => false}}]
-
-    assert_equal(expected, @parser.parse("module", source)[:functions])
-  end
-
-  # Known limitation - would be great to overcome in future
-  it "cannot handle reference type args" do
-    source = dummy_source + <<~SOURCE
-      class Classic {
-        public:
-          static void functional(int& a);
-      };
-    SOURCE
-
-    expected = [dummy_func]
-
-    assert_equal(expected, @parser.parse("module", source)[:functions])
-  end
-
   it "parses multiple classes in same file with uniquely named functions" do
     source = dummy_source + <<~SOURCE
       namespace ns1 {
@@ -2550,7 +2481,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
     expected = [dummy_func,
       voidvoid_func(["ns1"], name="ns1_Classic_functional"),
       { :name => "ns1_Classical_functionality",
-        :orig_name => "functionality",
+        :unscoped_name => "functionality",
         :class => "Classical",
         :namespace => ["ns1"],
         :var_arg => nil,
@@ -2573,7 +2504,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
           :const? => false,
           :const_ptr? => false}},
       { :name => "Classy_func",
-        :orig_name => "func",
+        :unscoped_name => "func",
         :class => "Classy",
         :namespace => [],
         :var_arg => nil,
@@ -2622,7 +2553,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
     expected = [dummy_func,
       voidvoid_func(["ns1"], name="ns1_Classic_functional"),
       { :name => "ns1_Classical_functional",
-        :orig_name => "functional",
+        :unscoped_name => "functional",
         :class => "Classical",
         :namespace => ["ns1"],
         :var_arg => nil,
@@ -2645,7 +2576,7 @@ describe CMockHeaderParser, "Verify CMockHeaderParser Module" do
           :const? => false,
           :const_ptr? => false}},
       { :name => "Classy_functional",
-        :orig_name => "functional",
+        :unscoped_name => "functional",
         :class => "Classy",
         :namespace => [],
         :var_arg => nil,

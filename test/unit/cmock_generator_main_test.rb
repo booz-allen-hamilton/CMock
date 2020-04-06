@@ -325,9 +325,6 @@ describe CMockGenerator, "Verify CMockGenerator Module" do
                  "#include <string.h>\n",
                  "#include <stdlib.h>\n",
                  "#include <setjmp.h>\n",
-                 "#ifdef __cplusplus\n",
-                 "#include <functional>\n",
-                 "#endif\n",
                  "#include \"cmock.h\"\n",
                  "#include \"MockPoutPoutFish.h\"\n",
                  "\n",
@@ -463,6 +460,7 @@ describe CMockGenerator, "Verify CMockGenerator Module" do
     output = []
     expected = [ "void MockPoutPoutFish_Destroy(void)\n{\n",
                  "  CMock_Guts_MemFreeAll();\n",
+                 "  memset(&Mock, 0, sizeof(Mock));\n",
                  "}\n\n"
                ]
 
@@ -478,8 +476,7 @@ describe CMockGenerator, "Verify CMockGenerator Module" do
     output = []
     expected = [ "void MockPoutPoutFish_Destroy(void)\n{\n",
                  "  CMock_Guts_MemFreeAll();\n",
-                 "  memset(&Mock.First_CallInstance, 0, sizeof(Mock.First_CallInstance));\n",
-                 "  memset(&Mock.Second_CallInstance, 0, sizeof(Mock.Second_CallInstance));\n",
+                 "  memset(&Mock, 0, sizeof(Mock));\n",
                  "  uno",
                  "  GlobalExpectCount = 0;\n",
                  "  GlobalVerifyOrder = 0;\n",
@@ -500,7 +497,7 @@ describe CMockGenerator, "Verify CMockGenerator Module" do
                  :args => ["uint32 sandwiches", "const char* named"],
                  :var_arg => nil,
                  :name => "SupaFunction",
-                 :orig_name => "SupaFunction",
+                 :unscoped_name => "SupaFunction",
                  :namespace => [],
                  :class => nil,
                  :attributes => "__inline"
@@ -538,7 +535,7 @@ describe CMockGenerator, "Verify CMockGenerator Module" do
                  :args => ["uint32 sandwiches"],
                  :var_arg => "corn ...",
                  :name => "SupaFunction",
-                 :orig_name => "SupaFunction",
+                 :unscoped_name => "SupaFunction",
                  :namespace => [],
                  :class => nil,
                  :attributes => nil
@@ -574,7 +571,7 @@ describe CMockGenerator, "Verify CMockGenerator Module" do
                  :args_string => "uint32 sandwiches, const char* named",
                  :args => ["uint32 sandwiches", "const char* named"],
                  :var_arg => nil,
-                 :orig_name => "SupaFunction",
+                 :unscoped_name => "SupaFunction",
                  :namespace => ["ns1", "ns2"],
                  :class => "SupaClass",
                  :name => "ns1_ns2_SupaClass_SupaFunction",
@@ -609,27 +606,27 @@ describe CMockGenerator, "Verify CMockGenerator Module" do
     assert_equal(expected.join, output.join)
   end
 
-  it "create mock implementation functions in source file with different options" do
-    function = { :modifier => "",
+  it "create mock implementation functions in source file with different options for C++ static member" do
+    function = { :modifier => "static",
                  :c_calling_convention => "__stdcall",
                  :return => test_return[:int],
                  :args_string => "uint32 sandwiches",
                  :args => ["uint32 sandwiches"],
                  :var_arg => "corn ...",
-                 :name => "SupaFunction",
-                 :orig_name => "SupaFunction",
+                 :name => "SupaClass_SupaFunction",
+                 :unscoped_name => "SupaFunction",
                  :namespace => [],
-                 :class => nil,
+                 :class => "SupaClass",
                  :attributes => nil
                }
     output = []
-    expected = [ "int __stdcall SupaFunction(uint32 sandwiches, corn ...)\n",
+    expected = [ "static int __stdcall SupaClass::SupaFunction(uint32 sandwiches, corn ...)\n",
                  "{\n",
                  "  UNITY_LINE_TYPE cmock_line = TEST_LINE_NUM;\n",
-                 "  CMOCK_SupaFunction_CALL_INSTANCE* cmock_call_instance;\n",
-                 "  UNITY_SET_DETAIL(CMockString_SupaFunction);\n",
-                 "  cmock_call_instance = (CMOCK_SupaFunction_CALL_INSTANCE*)CMock_Guts_GetAddressFor(Mock.SupaFunction_CallInstance);\n",
-                 "  Mock.SupaFunction_CallInstance = CMock_Guts_MemNext(Mock.SupaFunction_CallInstance);\n",
+                 "  CMOCK_SupaClass_SupaFunction_CALL_INSTANCE* cmock_call_instance;\n",
+                 "  UNITY_SET_DETAIL(CMockString_SupaClass_SupaFunction);\n",
+                 "  cmock_call_instance = (CMOCK_SupaClass_SupaFunction_CALL_INSTANCE*)CMock_Guts_GetAddressFor(Mock.SupaClass_SupaFunction_CallInstance);\n",
+                 "  Mock.SupaClass_SupaFunction_CallInstance = CMock_Guts_MemNext(Mock.SupaClass_SupaFunction_CallInstance);\n",
                  "  uno",
                  "  UNITY_TEST_ASSERT_NOT_NULL(cmock_call_instance, cmock_line, CMockStringCalledMore);\n",
                  "  cmock_line = cmock_call_instance->LineNumber;\n",
@@ -653,7 +650,7 @@ describe CMockGenerator, "Verify CMockGenerator Module" do
                  :args_string => "uint32 sandwiches",
                  :args => ["uint32 sandwiches"],
                  :var_arg => nil,
-                 :orig_name => "SupaFunction",
+                 :unscoped_name => "SupaFunction",
                  :namespace => ["ns1"],
                  :class => "SupaClass",
                  :name => "ns1_SupaClass_SupaFunction",
@@ -673,7 +670,7 @@ describe CMockGenerator, "Verify CMockGenerator Module" do
                  :args_string => "uint32 sandwiches",
                  :args => ["uint32 sandwiches"],
                  :var_arg => nil,
-                 :orig_name => "SupaFunction",
+                 :unscoped_name => "SupaFunction",
                  :namespace => ["ns1", "ns2"],
                  :class => "SupaClass",
                  :name => "ns1_ns2_SupaClass_SupaFunction",

@@ -170,9 +170,6 @@ class CMockGenerator
     file << "#include <string.h>\n"
     file << "#include <stdlib.h>\n"
     file << "#include <setjmp.h>\n"
-    file << "#ifdef __cplusplus\n"
-    file << "#include <functional>\n"
-    file << "#endif\n"
     file << "#include \"cmock.h\"\n"
     @includes_c_pre_header.each { |inc| file << "#include #{inc}\n" }
     file << "#include \"#{header_file}\"\n"
@@ -239,10 +236,7 @@ class CMockGenerator
   def create_mock_destroy_function(file, functions)
     file << "void #{@clean_mock_name}_Destroy(void)\n{\n"
     file << "  CMock_Guts_MemFreeAll();\n"
-    # NOTE: zeroing an object may result in crashes so we muct be selective when erasing this structure
-    functions.each do |function|
-      file << "  memset(&Mock.#{function[:name]}_CallInstance, 0, sizeof(Mock.#{function[:name]}_CallInstance));\n"
-    end
+    file << "  memset(&Mock, 0, sizeof(Mock));\n"
     file << functions.collect { |function| @plugins.run(:mock_destroy, function) }.join
 
     unless @fail_on_unexpected_calls
@@ -278,12 +272,12 @@ class CMockGenerator
     # Create mock function
     unless @weak.empty?
       file << "#if defined (__IAR_SYSTEMS_ICC__)\n"
-      file << "#pragma weak #{function[:orig_name]}\n"
+      file << "#pragma weak #{function[:unscoped_name]}\n"
       file << "#else\n"
-      file << "#{function_mod_and_rettype} #{function[:orig_name]}(#{args_string}) #{weak};\n"
+      file << "#{function_mod_and_rettype} #{function[:unscoped_name]}(#{args_string}) #{weak};\n"
       file << "#endif\n\n"
     end
-    file << "#{function_mod_and_rettype} #{cls_pre}#{function[:orig_name]}(#{args_string})\n"
+    file << "#{function_mod_and_rettype} #{cls_pre}#{function[:unscoped_name]}(#{args_string})\n"
     file << "{\n"
     file << "  UNITY_LINE_TYPE cmock_line = TEST_LINE_NUM;\n"
     file << "  CMOCK_#{function[:name]}_CALL_INSTANCE* cmock_call_instance;\n"
@@ -331,7 +325,7 @@ class CMockGenerator
 
     file << "#{decl}\n"
     file << "{\n"
-    file << "  //TODO: Implement Me!\n"
+    file << "  /*TODO: Implement Me!*/\n"
     function[:args].each { |arg| file << "  (void)#{arg[:name]};\n" }
     file << "  return (#{(function[:return][:type])})0;\n" unless function[:return][:void?]
     file << "}\n\n"

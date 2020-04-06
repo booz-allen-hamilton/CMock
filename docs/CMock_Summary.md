@@ -732,7 +732,7 @@ based on other settings, particularly Unity's settings.
 
 * `CMOCK_MEM_INDEX_TYPE`
   This needs to be something big enough to point anywhere in Cmock's
-  memory space... usually it's an unsigned int.
+  memory space... usually it's a size_t.
 
 Other Tips
 ==========
@@ -750,17 +750,29 @@ an iterative manner with different arguments.
 
 C++ Support
 ---------
-C++ unit test/mocking frameworks often use a completely different approach (vs. CMock) that relies on overloading virtual class members and does not support directly mocking static class member methods or free functions (i.e., functions in plain C). One workaround is to wrap the non-virtual functions in an object that exposes them as virtual methods and modify your code to inject mocks at run-time … but there is another way!
+C++ unit test/mocking frameworks often use a completely different approach (vs.
+CMock) that relies on overloading virtual class members and does not support
+directly mocking static class member methods or free functions (i.e., functions
+in plain C). One workaround is to wrap the non-virtual functions in an object
+that exposes them as virtual methods and modify your code to inject mocks at
+run-time... but there is another way!
 
-Simply use CMock to mock the static member methods and a C++ mocking framework to handle the virtual methods. (Yes, you can mix mocks from CMock and a C++ mocking framework together in the same test!)
+Simply use CMock to mock the static member methods and a C++ mocking framework
+to handle the virtual methods. (Yes, you can mix mocks from CMock and a C++
+mocking framework together in the same test!)
 
-Keep in mind that since C++ mocking frameworks often link the real object to the unit test too, we need to resolve multiple definition errors with something like the following in the source of the real implementation for any functions that CMock mocks:
+Keep in mind that since C++ mocking frameworks often link the real object to the
+unit test too, we need to resolve multiple definition errors with something like
+the following in the source of the real implementation for any functions that
+CMock mocks:
 
     #if defined(TEST)
         __attribute__((weak))
     #endif
 
-To address potential issues with re-using the same function name in different namespaces/classes, the generated function names include the namespace(s) and class. For example:
+To address potential issues with re-using the same function name in different
+namespaces/classes, the generated function names include the namespace(s) and
+class. For example:
 
     namespace MyNamespace {
         class MyClass {
@@ -771,8 +783,6 @@ To address potential issues with re-using the same function name in different na
 Will generate functions like
 
     void MyNamespace_MyClass_DoesSomething_ExpectAndReturn(int a, int b, int toReturn);
-
-NOTE: The current implementation does support references as return types but not as arguments.
 
 Examples
 ========

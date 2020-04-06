@@ -52,11 +52,11 @@ class CMockGeneratorUtils
     lines << "  UNITY_TEST_ASSERT_NOT_NULL(cmock_call_instance, cmock_line, CMockStringOutOfMemory);\n"
     lines << "  memset(cmock_call_instance, 0, sizeof(*cmock_call_instance));\n"
     lines << "  Mock.#{func_name}_CallInstance = CMock_Guts_MemChain(Mock.#{func_name}_CallInstance, cmock_guts_index);\n"
-    lines << "  Mock.#{func_name}_IgnoreBool = (int)0;\n" if @ignore
+    lines << "  Mock.#{func_name}_IgnoreBool = (char)0;\n" if @ignore
     lines << "  cmock_call_instance->LineNumber = cmock_line;\n"
     lines << "  cmock_call_instance->CallOrder = ++GlobalExpectCount;\n" if @ordered && global_ordering_supported
     lines << "  cmock_call_instance->ExceptionToThrow = CEXCEPTION_NONE;\n" if @cexception
-    lines << "  cmock_call_instance->ExpectAnyArgsBool = (int)0;\n" if @expect_any
+    lines << "  cmock_call_instance->ExpectAnyArgsBool = (char)0;\n" if @expect_any
     lines
   end
 
@@ -69,7 +69,7 @@ class CMockGeneratorUtils
   end
 
   def code_assign_argument_quickly(dest, arg)
-    if arg[:ptr?] || @treat_as.include?(arg[:type]) || arg[:type].end_with?('&')
+    if arg[:ptr?] || @treat_as.include?(arg[:type])
       "  #{dest} = #{arg[:name]};\n"
     else
       assert_expr = "sizeof(#{arg[:name]}) == sizeof(#{arg[:type]}) ? 1 : -1"
